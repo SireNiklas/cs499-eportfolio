@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code review — Nicholas Harris, CS 499</title>
+<meta name="description" content="Informal code review of the GameBrowse artifact before enhancement, with the analysis and enhancement plan that followed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">Nicholas Harris <span>/ CS 499 capstone</span></a>
+    <nav>
+      <a href="index.html">Self-assessment</a>
+      <a href="code-review.html" aria-current="page">Code review</a>
+      <a href="artifacts.html">Artifacts</a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell" id="main">
+
+  <div class="hero">
+    <p class="eyebrow">Milestone one</p>
+    <h1>Code review</h1>
+    <p class="standfirst">A walkthrough of the application as it stood before any enhancement, the problems found reading it, and the plan for what to change. Recorded for an audience of peers.</p>
+  </div>
+
+  <section id="video">
+    <h2>Recording</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O1</li>
+      <li class="tag on">O2</li>
+    </ul>
+    <div class="frame">
+      <iframe src="https://www.youtube.com/embed/6loW80Kd80w" title="CS 499 code review walkthrough" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <p class="prose"><a href="https://www.youtube.com/watch?v=6loW80Kd80w">Open the recording on YouTube</a></p>
+  </section>
+
+  <section id="existing">
+    <h2>Existing functionality</h2>
+    <hr class="rule">
+    <div class="prose">
+      <p>The artifact is Travlr Getaways, a travel booking site I built in CS 465. It runs on the MEAN stack: MongoDB with Mongoose for storage, Express for the API, and Angular standalone components for the front end. Admin access goes through JWT. For the capstone I am re-theming it into a game server browser with a mod browser alongside it, because both of those are the same problem shape and reusing the structure costs me nothing.</p>
+      <p>The walkthrough starts with the running application. The API is up on port 3000 and the Angular admin client on 4200, both out of WSL. Most of the public site is static. The travel listing is the part actually reading from the database, and that listing is what becomes the server browser. On the admin side I sign in with JWT, edit a trip, add a new one, and refresh the public page to show the record come through.</p>
+      <p>From there I go into the code. Under <code>app_api</code> the three pieces that matter are models, routes, and controllers. <code>travlr.js</code> holds the trip schema and defines which fields are required, with <code>code</code> carrying a unique index and <code>name</code> carrying a plain one. <code>user.js</code> holds the account fields, hashes the password, and issues the JWT on login, which is a lot of responsibility for a single model file. The route table in <code>index.js</code> maps each URL to a controller function and decides which routes are open and which need a valid token. The trips controller handles create, read, update, and delete. On the Angular side, <code>trip-data.service.ts</code> is what actually calls the API. The entry point is <code>app.js</code>, which wires up Express, connects the database, applies middleware, and mounts the routes.</p>
+    </div>
+  </section>
+
+  <section id="analysis">
+    <h2>Code analysis</h2>
+    <hr class="rule">
+    <div class="prose">
+      <p>The first problem is structural. Every function in the trips controller does two jobs. It handles the request and response, and it talks to Mongoose in the same body. <code>Trip.find</code> is called directly inside the handler. That means the controller knows the storage engine, so I cannot test the handler without a live database, and I cannot change how the data is stored without rewriting the controller. Those two concerns are stuck together.</p>
+      <p>Second is a logic issue in <code>tripsFindByCode</code>. It looks up one trip but uses <code>.find</code>, which returns an array, so a single lookup comes back as a list with one element in it and everything downstream has to reach into index zero. <code>findOne</code> returns the document or null and is the right shape. Nothing is broken by this. It is the kind of small wrong shape that spreads, because every caller ends up written around it.</p>
+      <p>Third is efficiency at the database. Only <code>code</code> and <code>name</code> are indexed. Any query that is not a code lookup does a full collection scan, so Mongo reads every document to find matches. On five seed trips that does not matter. On a server browser holding tens of thousands of records it does. There is also no test coverage anywhere near the queries or the indexes, so nothing tells me whether a query returns what it should.</p>
+      <p>Fourth is error handling. The try/catch blocks in the controller return a status code and a message, which is not wrong on its own, but there is no logging, so a production failure leaves no history and no stack trace to work from. The raw error object also goes straight back to the client, which hands whoever made the request internal detail they do not need. I hit this live while setting up the demo: the API was down and what came back was the literal error instead of anything a user could act on.</p>
+      <p>Fifth is security, and this is the area I am least confident in. The user model salts and hashes by hand on top of the crypto library instead of using a vetted password hashing library, and the iteration count is set far too low. Separately, the route table checks whether a request carries a token and stops there. A valid token gets you everything. For a server browser where users submit their own listings I need permissions, not just proof of login, and that check does not belong inline in the router. Unsanitized query input also reaches Mongo, which is an injection surface.</p>
+    </div>
+  </section>
+
+  <section id="plan">
+    <h2>Enhancement plan</h2>
+    <hr class="rule">
+    <div class="prose">
+      <p><b>Software design and engineering.</b> Put a repository layer between the controller and Mongoose. The controller calls an interface, something like <code>findPage</code> and <code>countMatching</code>, and the repository is the only thing that knows Mongoose exists. That makes the controller testable without a database and lets storage change underneath it. On the client, turn the trip-specific browse view into a reusable component driven by config objects so the server browser and the mod browser share it, and move the hardcoded API URL into config. I said on camera that I was not going to abstract before I had two real uses, so the plan was to build the server browser first and pull the shared piece out once the mod browser needed it.</p>
+      <p><b>Algorithms and data structures.</b> Stop handing back whatever the database returns in whatever order it comes out. Score each server on player count, ping, and uptime, sort by that score, and tie-break ascending on name so float scores that land equal still produce a stable order. The factors are pluggable so the mod browser can reuse the engine with different weights. Favorites feed into the score as a boost, not as a hard pin to the top. For search-as-you-type, walk a prefix trie so typing D, then R, then A narrows down the tree instead of rescanning the whole set on every keystroke.</p>
+      <p><b>Databases and security.</b> Index the fields I actually query and prove the change with <code>explain()</code>, showing the query move from a collection scan to an index scan. Whitelist query input so only expected fields get through and operator objects get rejected, which closes the injection surface. Add a role and ownership check on writes so a token alone does not authorize everything. Add a favorites collection so the boost has something to read from.</p>
+      <h3>Where the finished work diverged</h3>
+      <p>Two things came out differently once I was in the code.</p>
+      <p>On camera I said I would swap the hand-rolled hashing for bcrypt. I stayed on PBKDF2 and raised the iteration count to 210,000 instead, and I store the iteration count on each user record so existing accounts stay valid and get rehashed at next login, which is the only moment the plaintext password is available. Swapping the algorithm outright would have invalidated every account already in the database, and the work factor was the actual finding.</p>
+      <p>I also said <code>findByCode</code> should become <code>findOne</code>. It ended up going through <code>findAll</code> with a code filter. <code>findOne</code> is the correct call in isolation, but changing the return shape would have broken every caller written against the array, and the repository interface was the thing under test. The shape stayed and the coupling problem got solved.</p>
+      <p>One more thing worth recording. All sixty unit tests passed and an audit script cleared sixty-six checks while the API was still returning 2,938-byte HTML stack traces to unauthenticated requests. The error handling finding above is real, and my own tests did not catch it. A live request in a browser did.</p>
+    </div>
+    <p class="prose"><a href="artifacts.html">See what the enhancements turned into</a></p>
+  </section>
+
+  <footer class="foot">
+    <span>SNHU CS 499 Computer Science Capstone</span>
+    <span><a href="https://github.com/SireNiklas">github.com/SireNiklas</a></span>
+    <span><a href="mailto:SirNiklas9@proton.me">SirNiklas9@proton.me</a></span>
+  </footer>
+
+</main>
+</body>
+</html>

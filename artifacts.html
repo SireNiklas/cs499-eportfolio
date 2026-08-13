@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifacts — Nicholas Harris, CS 499</title>
+<meta name="description" content="Three enhancements to the GameBrowse MEAN stack application: software design, algorithms and data structures, and databases and security.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">Nicholas Harris <span>/ CS 499 capstone</span></a>
+    <nav>
+      <a href="index.html">Self-assessment</a>
+      <a href="code-review.html">Code review</a>
+      <a href="artifacts.html" aria-current="page">Artifacts</a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell" id="main">
+
+  <div class="hero">
+    <p class="eyebrow">Artifacts and narratives</p>
+    <h1>GameBrowse</h1>
+    <p class="standfirst">A MEAN stack application first built as a travel booking site in CS 465, re-themed into a game catalogue and then enhanced three times. Every enhancement links to the code as it was before and as it shipped.</p>
+  </div>
+
+  <section id="origin">
+    <h2>The original artifact</h2>
+    <hr class="rule">
+    <div class="artifact">
+      <div class="prose">
+        <p>The starting point was the CS 465 full stack project: an Express and Mongoose backend, a server-rendered Handlebars front end, and a separate Angular admin client authenticated with JWT. It worked, and that was about all it did. Query paths were unindexed, credentials were stored with a single fixed hashing configuration, and the only tests were the ones a browser could perform by hand.</p>
+      </div>
+      <div class="meta">
+        <span><b>Course</b> CS 465 Full Stack Development I</span>
+        <span><b>Stack</b> MongoDB, Express, Angular, Node</span>
+        <span><b>Repository</b> <a href="https://github.com/SireNiklas/cs465-fullstack">cs465-fullstack</a></span>
+        <span><b>Baseline</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/c1f9f360dbe7c7e65af702ccf91b2ee2663a41dd">c1f9f36</a></span>
+        <span><b>Re-theme</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/b3c37720d1f5006aa0c2d1d7098c02906df3d072">b3c3772</a></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="enhancement-one">
+    <h2>Enhancement one — software design and engineering</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O2</li>
+      <li class="tag on">O4</li>
+    </ul>
+    <div class="artifact">
+      <h3>Narrative</h3>
+      <div class="prose">
+      <h3>Artifact Description</h3>
+      <p>The artifact is GameBrowse, a MEAN stack web application. I built the original version in CS-465 as Travlr Getaways, a travel site with an Express and MongoDB API, a Mongoose data model, and an Angular administration client. For the capstone I re-themed it into GameBrowse, a browser for game servers and mods, so the work reflects my own platform interests not a course template. The code lives at github.com/SireNiklas/cs465-fullstack. This milestone enhances the software design and engineering category of that artifact.</p>
+      <h3>Justification for Inclusion</h3>
+      <p>I selected this artifact because it exercises the full stack I want to work in: a Node and Express API, a MongoDB and Mongoose data layer, and an Angular front end. That breadth lets one project demonstrate design skill at more than one layer. Two components carry the enhancement. The first is a repository layer on the API side. Before the change, the trips controller imported the Mongoose model directly and built queries inline, which fused the HTTP layer to the persistence layer. I introduced a BaseRepository that wraps any Mongoose model and a TripRepository that extends it with domain-named methods, then refactored the controller to depend on the repository, not the model. The controller now does only HTTP work, and the data logic lives in one place. The second component is a reusable BrowseModule on the Angular side. The original trip-listing and trip-card components were hard-coded to the Trip type, so neither the list nor the cards could be reused. I extracted a domain-agnostic BrowseItem contract, a BrowseListComponent with client-side search, and a BrowseCardComponent, packaged them as an importable BrowseModule, and refactored the trip listing to consume it by mapping Trip onto BrowseItem. Trips is the first consumer. Game servers and mods reuse the same module later without touching it.</p>
+      <h3>Course Outcomes</h3>
+      <p>In Module One I planned to meet the outcome on using well-founded and innovative techniques, skills, and tools to implement solutions that deliver value. This enhancement meets that outcome. The repository pattern is a well-founded technique documented by Fowler (2002), and applying it here delivers concrete value: the controller becomes testable without a live database, and swapping the persistence technology would only touch the repository; the rest of the API would not change. The reusable module is the tools-and-skills half of the same outcome, since it turns a single screen into a shared capability. I have no changes to my outcome-coverage plan. The algorithms enhancement still targets the data-structures-and-algorithms outcome in Module Four, and the databases enhancement still targets the security-mindset outcome in Module Five.</p>
+      <h3>Reflection on the Process</h3>
+      <p>The main thing I learned is that good design is mostly about where you draw the seams. The repository work was less about new code and more about deciding what the controller should not know. I proved the seam with a small test that injects a fake model into the repository and drives all five operations with no database running, which only works because the controller now depends on an abstraction instead of on Mongoose. The challenge on the front end was resisting premature abstraction. I did not design a universal browse system up front. I built it around the one screen I actually had, the trip listing, and kept the contract small enough that a second consumer can adopt it without forcing changes back into the module. The hardest single decision was integrating a classic NgModule into an application that bootstraps with standalone components. Confirming that a standalone component can import an NgModule, and that the NgModule can re-export standalone components, is what let BrowseModule stay a clean, importable unit. The result is an artifact that does the same job as before through an architecture I can defend and extend.</p>
+      <h3>AI Acknowledgment</h3>
+      <p>I used Anthropic&#x27;s Claude to help plan the architecture, draft the enhanced code against my repository, and refine this narrative. I reviewed the design decisions and the resulting code myself (Anthropic, 2026).</p>
+      <h3>References</h3>
+      <p>Anthropic. (2026). Claude (Opus 5) [Large language model]. <a href="https://claude.ai">https://claude.ai</a></p>
+      <p>Fowler, M. (2002). Patterns of enterprise application architecture. Addison-Wesley.</p>
+    </div>
+      <div class="meta">
+        <span><b>Before</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/c1f9f360dbe7c7e65af702ccf91b2ee2663a41dd">c1f9f36</a></span>
+        <span><b>After</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/7370fea50eec99fd81533014c13c8142fe0551e2">7370fea</a></span>
+        <span><b>Branch</b> feat/module-two-software-design</span>
+        <span><b>Tests</b> <span class="pass">TripRepository.test.js passing</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="enhancement-two">
+    <h2>Enhancement two — algorithms and data structures</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O3</li>
+      <li class="tag on">O4</li>
+    </ul>
+    <div class="artifact">
+      <h3>Narrative</h3>
+      <div class="prose">
+      <h3>The Artifact</h3>
+      <p>The artifact is GameBrowse, a re-themed version of the Travlr Getaways MEAN stack application I built in CS-465. I kept the Express and Mongoose backend and the Angular admin front end and reframed the domain from travel packages to game servers and mods. I created the original travel version in the CS-465 term earlier this year, and the enhancement work in this course is mine, built on top of it. For the algorithms and data structures category, the enhancement is an in-memory ranking engine that powers search-as-you-type over a large set of servers.</p>
+      <h3>Why It Is in the ePortfolio</h3>
+      <p>I chose this enhancement because the ranking engine is the part of the project where the data structure choice actually changes the behavior of the product, not just its tidiness. A game browser lives or dies on how it feels to type into the search box. The naive approach is to scan every server on every keystroke and filter by name. That works at small sizes and falls apart as the list grows, because the cost of every keystroke scales with the total number of servers. The enhancement replaces that scan with a prefix trie, so the cost of a search depends on the length of what you typed plus the number of matches, not on how many servers exist in total. That is the specific skill this category is meant to show: picking a structure whose shape matches the access pattern, and being able to say why.</p>
+      <p>The engine has three parts that I designed to be tested and reasoned about in isolation. The first is the prefix trie, which indexes server names and answers the question &quot;which servers start with this text.&quot; The second is a set of pluggable score factors, each one a small function that rates a server from zero to one on a single dimension such as how full it is, how low its ping is, and how stable its uptime has been. The fullness factor is worth a note because the obvious version is wrong: I made it peak near eighty-five percent of capacity and taper back down as a server fills, so a busy but joinable server outranks a packed one a player cannot actually get into. The engine takes these factors as an array, so the same ranking code can serve a different browser, the mod browser for instance, just by handing it a different array. The third is the scoring and comparison layer, which combines the factors into one base score per server and then sorts. I split the base score, which is the same for every user and can be computed once and cached, from a per-user favorite boost that is applied on top of the cached base at request time. If favorites were baked into the base score, nothing could be cached, because every user would rank the same servers differently. Keeping that split is the design decision I am most deliberate about in this artifact.</p>
+      <p>Two smaller decisions are worth naming because they are the kind of thing that goes wrong quietly. The comparison uses an epsilon tolerance, so two scores that come out of different floating point arithmetic but should be equal are treated as a tie and fall back to name order. Without that, the same query can return a slightly different order on different runs, which looks like a bug to a user and is hard to reproduce. And every score factor guards against a missing field or a zero denominator, so a server record with incomplete data returns a low score rather than throwing or producing NaN and poisoning the sort.</p>
+      <h3>Meeting the Course Outcomes</h3>
+      <p>The plan I set in Module One for this category was to design and evaluate a computing solution using algorithmic principles, and to make the evaluation concrete rather than asserted. I built the supporting structure to do exactly that. There is a behavior specification of twenty-one tests that pins down what the engine must do: prefix matching that is case-insensitive and handles duplicate names, an empty prefix that returns everything, a comparison that is stable across repeated runs, and a favorite boost that changes the order for one user without changing the shared base for anyone else. There is a deterministic synthetic data generator that produces tens of thousands of server records from a fixed seed, so the benchmark measures the same input every time. And there is a benchmark harness that times the naive full scan against the trie path with the ranking, the boost, and the paging held identical on both sides, so the only thing being measured is the difference in how candidates are found.</p>
+      <p>The engine is complete and the evaluation is concrete. All twenty-one behavior tests pass, covering the trie traversal, the score factors, the stable comparison, and the per-user boost. The benchmark runs the naive full scan and the trie path over the same deterministic synthetic set at sizes from one thousand up to seventy-five thousand records. At seventy-five thousand, the naive scan averages roughly nine milliseconds per search while the trie path stays under one millisecond, about ten times faster, and the gap widens as the set grows because the naive cost scales with the total count while the trie cost does not. The build cost of the trie is paid once when the cache is filled, and the per-keystroke query cost is what the trie brings down. That is the evaluation the outcome asks for: not a claim that the structure is faster, but a measurement of how much and why.</p>
+      <h3>What I Learned and Where It Was Hard</h3>
+      <p>The hardest part was not the trie itself. It was the discipline of writing the test specification and the benchmark before the implementation, and then holding to it. It is uncomfortable to stare at twenty-one failing tests, but every one of them is a precise statement of what the code owes, and watching them turn green one at a time is a much better signal than running the app and eyeballing the output. Splitting the cacheable base score from the per-user boost was the design idea I am most glad I caught early, because it is the kind of thing that is nearly free to build in at the start and expensive to retrofit once the caching assumptions have spread through the code. If I were starting over, I would write the benchmark first of all, before even the tests, because seeing the naive scan get slower as the data grows is what made the case for the trie obvious instead of theoretical. This work was completed with assistance from a generative artificial intelligence tool, used for the test scaffolding, the synthetic data generator, the benchmark harness, and the engine implementation; the engine design, the factor and structure choices, and the evaluation are mine (Anthropic, 2026).</p>
+      <h3>Reference</h3>
+      <p>Anthropic. (2026). Claude (Opus 5) [Large language model]. <a href="https://claude.ai">https://claude.ai</a></p>
+    </div>
+      <div class="meta">
+        <span><b>Before</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/c1f9f360dbe7c7e65af702ccf91b2ee2663a41dd">c1f9f36</a></span>
+        <span><b>After</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/f9cb19ebaf263233e281c2fbdc7c1b4e2307bb70">f9cb19e</a></span>
+        <span><b>Branch</b> feat/module-four-algorithms</span>
+        <span><b>Tests</b> <span class="pass">ranking.test.js passing</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="enhancement-three">
+    <h2>Enhancement three — databases and security</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O4</li>
+      <li class="tag on">O5</li>
+    </ul>
+    <div class="artifact">
+      <h3>Narrative</h3>
+      <div class="prose">
+      <h3>Description of the Artifact</h3>
+      <p>The artifact is GameBrowse, a MEAN stack application I built on top of Travlr Getaways, the travel booking site I wrote for CS-465 Full Stack Development I earlier in this program. The original is a Node and Express API backed by MongoDB through Mongoose, with a Handlebars public site and an Angular admin client. I have been building it toward a browser for game servers and mods, which is why the ranking engine in Enhancement Two scores records on activity and stability instead of price. The data model is still the original trip schema, so that re-theme is not finished and is on my list before the ePortfolio. This is the third and final enhancement to that same artifact. The first added a repository layer between the controllers and Mongoose. The second added an in-memory ranking engine built on a prefix trie. This one covers databases and security.</p>
+      <h3>Why It Is in the ePortfolio</h3>
+      <p>I chose this artifact because the security problems in it are real ones I found myself during the code review, not exercises invented to have something to fix. Two stood out. Passwords were hashed with PBKDF2 at 1,000 iterations, a number that was the standard when PBKDF2 was published and has not been defensible for a long time. OWASP currently puts the floor for PBKDF2 with HMAC-SHA-512 at 210,000 iterations (OWASP Foundation, n.d.). The second problem was worse. Every write route checked that a JSON Web Token was valid and stopped there. A valid token proves who you are. It says nothing about what you are allowed to do, so any account that could log in could delete any record in the database.</p>
+      <p>Three pieces of the enhanced code show the work best. The first is the query whitelist in app_api/query/tripQuery.js. It converts an untrusted query string into a Mongoose filter, accepts eight named parameters, and rejects everything else with a 400. The part I care about is narrower than that: Express parses a query string like code[$ne]= into an object, and that object is how operator injection reaches a MongoDB query. Rejecting any value that is not a plain string closes it. The module also escapes regular expression metacharacters before building a prefix pattern, so a caller cannot hand the engine something that backtracks badly.</p>
+      <p>The second is the favorites collection and the repository that owns it. Each favorite belongs to one user, enforced by a unique compound index on the user and trip code. What matters is the repository shape. Every method takes an owner id and folds it into the filter before the query is built, and it throws if the id is missing. There is no method on that class that can read or delete a row without an owner, so an ownership check cannot be forgotten at a call site. The controller reads the owner id off the verified token, which means there is nowhere for a caller to supply someone else&#x27;s. I would rather make a mistake impossible to write than remember to check for it in five places.</p>
+      <p>The third is the authorization layer. The user schema now carries a role, generateJwt puts the role in the token, and a requireRole middleware answers 401 when there is no token and 403 when the role is wrong. Putting the role in the token means authorization does not cost a database read on every request. Adding trips, editing them, and deleting them now require the admin role. Alongside that, GET /api/trips/stats runs an aggregation pipeline that groups by resort and reports count, average, lowest and highest price, and earliest departure. Prices are stored as strings in the original schema, so the pipeline converts them with $toDouble before any arithmetic happens.</p>
+      <h3>Course Outcomes</h3>
+      <p>This enhancement covers the outcome I planned for it in Module One, developing a security mindset that anticipates adversarial exploits and mitigates design flaws. The whitelist anticipates operator injection. The error handling closes an information disclosure that was handing internal filesystem paths to anonymous callers. The role checks close an authorization gap that existed because the application was written for one trusted administrator and then pointed at a multi-user problem. The iteration count and the constant-time hash comparison address the credential storage. It also contributes to the outcome on using well-founded techniques to implement database solutions, through the compound indexes and the aggregation pipeline. I have no changes to the outcome coverage plan I submitted in Module One. The three enhancements map to the outcomes I said they would.</p>
+      <h3>Reflection</h3>
+      <p>The part I learned the most from is the part where I was wrong. I added a compound index on start and name to serve a query that filters trips by date range and sorts them by name. It looked correct. Then I ran explain() and the planner ignored it completely, walking the single field name index instead. The reason is in MongoDB&#x27;s own guidance: an index sort cannot be performed on the results of a range filter (MongoDB, n.d.). Once you scan a range of start values the rows are no longer in name order, so the sort would have to happen in memory afterward, and the planner avoided that by using an index that gave it the order for free. The fix was to reverse the index to name and then start. Equality, then sort, then range. After the change the same query used the index I built for it.</p>
+      <p>Measuring also caught a defect I had introduced myself. The whitelist built a case-insensitive prefix pattern, and a case-insensitive regular expression cannot produce index bounds, so a name search read every key in the index. At 50,000 records that was 50,000 index keys examined to return 10 documents. The search worked and looked fast on four seed records, which is exactly why it survived until I measured it at size. The fix was to store a lowercased copy of the name, index that, lowercase the caller&#x27;s input, and match a case-sensitive pattern against it. The behavior a user sees is identical. The key count dropped from 50,000 to 11.</p>
+      <p>The hardest design problem was the password iteration count, because changing a constant from 1,000 to 210,000 invalidates every hash already stored. Every existing account would fail to log in with the correct password. I store the iteration count on each user record and verify against the stored value, so old hashes keep working, and the local login strategy rehashes at the current count immediately after a successful check, since login is the only moment the application holds the plaintext. Old accounts migrate as their owners return and no one is locked out. I should be straight about the limit of this. OWASP now treats Argon2id as the default recommendation and PBKDF2 as the choice for FIPS certification or broad platform support (OWASP Foundation, n.d.). I kept PBKDF2 because it is what the application already used and swapping the algorithm was outside the scope of this enhancement. Raising the count is a real improvement, not the strongest option available.</p>
+      <p>The last flaw I found did not come from the code at all. It came from watching the server log while a live test ran against the API. Every response size was two digits except the 401s, which were 2,938 bytes. An unauthenticated request to a protected route was answering with a full HTML page containing a Node stack trace: absolute paths under my home directory, the project layout, the dependency internals. The cause was handler order. The original app.js registered a generic error renderer that wrote err.stack into the page whenever the environment was not production, and after it a second handler meant to turn token failures into JSON. Express runs error handlers in the order they are registered and the renderer never called next(), so the JSON handler had never executed once in the life of the application. There is one handler now. It answers JSON for anything under /api, logs server errors to the console instead of returning them, and never puts a stack in a response. The same request is 46 bytes. What makes this one worth writing down is that my 60 unit tests passed the whole time it was broken, because none of them load app.js. The defect only existed in the assembled application, and only a request to a running server could see it.</p>
+      <p>The whole enhancement is covered by 60 unit tests that need no database running, because the whitelist and the role gate are plain functions and the repository takes an injected model. I also wrote a tool that runs each query twice, once as the planner chooses and once forced onto a collection scan, so the two numbers sit side by side. At 50,000 records the resort query examines 20 documents against 50,000 for the same 20 results. On top of that there are 33 checks that run against the live application, covering the role gate through real Express middleware, the aggregation returning numbers from string prices, and an adversarial ownership case where one account favorites a trip and a second account must not be able to see or delete it. I would not have found any of my three mistakes by reading the code. I found them by measuring, and that is the habit I am taking out of this milestone.</p>
+      <h3>Use of Generative AI</h3>
+      <p>The enhancement code in this milestone was generated with Claude (Anthropic, 2026). I set the scope and the design constraints, ran every test and every explain() measurement on my own machine, and made the calls on trade-offs, including keeping PBKDF2 and choosing the per-record migration over re-seeding the accounts. The measurements that exposed both index problems came from my own runs. This narrative is my own writing.</p>
+      <h3>References</h3>
+      <p>Anthropic. (2026). Claude (Opus 5) [Large language model]. <a href="https://claude.ai">https://claude.ai</a></p>
+      <p>MongoDB. (n.d.). The ESR (equality, sort, range) guideline. MongoDB Manual. <a href="https://www.mongodb.com/docs/manual/tutorial/equality-sort-range-guideline/">https://www.mongodb.com/docs/manual/tutorial/equality-sort-range-guideline/</a></p>
+      <p>OWASP Foundation. (n.d.). Password storage cheat sheet. OWASP Cheat Sheet Series. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html</a></p>
+    </div>
+      <div class="meta">
+        <span><b>Before</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/c1f9f360dbe7c7e65af702ccf91b2ee2663a41dd">c1f9f36</a></span>
+        <span><b>After</b> <a href="https://github.com/SireNiklas/cs465-fullstack/tree/ba954c2d3d9b7051e8e469da0f69a70b3e2fa2d6">ba954c2</a></span>
+        <span><b>Branch</b> feat/module-five-databases</span>
+        <span><b>Tests</b> <span class="pass">security.test.js passing</span></span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>SNHU CS 499 Computer Science Capstone</span>
+    <span><a href="https://github.com/SireNiklas">github.com/SireNiklas</a></span>
+    <span><a href="mailto:SirNiklas9@proton.me">SirNiklas9@proton.me</a></span>
+  </footer>
+
+</main>
+</body>
+</html>

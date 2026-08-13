@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nicholas Harris — CS 499 ePortfolio</title>
+<meta name="description" content="Computer science capstone ePortfolio: professional self-assessment, code review, and three enhanced artifacts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">Nicholas Harris <span>/ CS 499 capstone</span></a>
+    <nav>
+      <a href="index.html" aria-current="page">Self-assessment</a>
+      <a href="code-review.html">Code review</a>
+      <a href="artifacts.html">Artifacts</a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell" id="main">
+
+  <div class="hero">
+    <p class="eyebrow">Professional self-assessment</p>
+    <h1>Build engineering, platform work, and one MEAN stack application taken apart three times.</h1>
+    <p class="standfirst">This portfolio documents the final capstone of the SNHU computer science program. One artifact, GameBrowse, was enhanced across software design and engineering, algorithms and data structures, and databases and security. Everything is linked back to the commit it landed in.</p>
+  </div>
+
+  <section id="ledger">
+    <h2>Outcome ledger</h2>
+    <hr class="rule">
+    <p class="prose">The program defines five outcomes. Each row names where the evidence for that outcome lives.</p>
+
+    <div class="ledger">
+      <div class="ledger-row">
+        <div class="ledger-id">O1</div>
+        <div>
+          <p class="ledger-name">Collaborative environments</p>
+          <p class="ledger-desc">Building review practice that lets a mixed audience support technical decisions.</p>
+        </div>
+        <div class="ledger-where">
+          <a href="code-review.html">Code review</a><br>
+          <a href="#collaboration">Self-assessment</a>
+        </div>
+      </div>
+
+      <div class="ledger-row">
+        <div class="ledger-id">O2</div>
+        <div>
+          <p class="ledger-name">Professional communication</p>
+          <p class="ledger-desc">Written, visual, and spoken material adapted to the audience receiving it.</p>
+        </div>
+        <div class="ledger-where">
+          <a href="code-review.html">Code review</a><br>
+          <a href="artifacts.html">Narratives</a>
+        </div>
+      </div>
+
+      <div class="ledger-row">
+        <div class="ledger-id">O3</div>
+        <div>
+          <p class="ledger-name">Algorithmic design and trade-offs</p>
+          <p class="ledger-desc">Solving a stated problem with an appropriate data structure and defending the cost.</p>
+        </div>
+        <div class="ledger-where">
+          <a href="artifacts.html#enhancement-two">Enhancement two</a>
+        </div>
+      </div>
+
+      <div class="ledger-row">
+        <div class="ledger-id">O4</div>
+        <div>
+          <p class="ledger-name">Well-founded tools and techniques</p>
+          <p class="ledger-desc">Testing, profiling, and industry-standard design applied to deliver working value.</p>
+        </div>
+        <div class="ledger-where">
+          <a href="artifacts.html#enhancement-one">Enhancement one</a><br>
+          <a href="artifacts.html#enhancement-three">Enhancement three</a>
+        </div>
+      </div>
+
+      <div class="ledger-row">
+        <div class="ledger-id">O5</div>
+        <div>
+          <p class="ledger-name">Security mindset</p>
+          <p class="ledger-desc">Anticipating adversarial use, validating input, and protecting stored credentials.</p>
+        </div>
+        <div class="ledger-where">
+          <a href="artifacts.html#enhancement-three">Enhancement three</a><br>
+          <a href="#security">Self-assessment</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="intro">
+    <h2>Where I am coming from</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O2</li>
+    </ul>
+    <div class="prose">
+      <p>I am a build engineer at a studio that makes military simulation games in Unity. My work is the part players never see: the pipelines that turn what a few dozen people commit into something that runs, the automation that catches a broken build before it reaches an artist, the tooling that decides whether someone waits four minutes or forty to test a change. I came into this degree already writing code for a living, which changed what I wanted out of it. I was not looking for a first language. I was looking for the reasoning underneath decisions I had been making by instinct.</p>
+      <p>That is what this capstone was for. GameBrowse started as Travlr Getaways, a travel booking application I built in CS 465, and I re-themed it into a browser for game servers and mods because that is closer to what I actually care about building. Three enhancements: a repository layer that separates the API from the database, an in-memory ranking engine on a prefix trie, and a pass over indexes, credential storage, and authorization. Each one is a place where I had to say why a decision was right and then measure whether it was.</p>
+      <p>Where I am going is platform and systems engineering. The thing I keep circling back to is user-generated content, the model Minecraft and Hytale run on, where the platform is infrastructure and the people using it make the thing worth showing up for. That is a systems problem before it is a game problem. Content arrives from someone you cannot trust, and it has to be indexed, ranked, served fast, and refused when it is wrong. This artifact is a small version of that, which is most of why I chose it.</p>
+    </div>
+  </section>
+
+  <section id="collaboration">
+    <h2>Collaborating in a team environment</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O1</li>
+    </ul>
+    <div class="prose">
+      <p>At the studio I own the main internal tool, which means most of what I write gets used by people who did not write it and do not want to think about it. The team is not standardized on where projects live. File system layout and project placement differ from person to person, so the tool cannot assume a path and be right. Every assumption I make about where something sits is an assumption that is wrong for somebody.</p>
+      <p>I raised standardizing it. The direction we landed on is virtual drives, which normalizes the paths the tool sees regardless of where the real files are. That solves the technical half. The half that is actually hard is getting projects placed into those drives in the first place, because that means asking a room full of people to change something that already works for them individually so that it works for everyone collectively. That has not fully happened, and I do not think pushing harder is the answer.</p>
+      <p>What that meant in practice showed up in a bug that took me two days. Our package manager grabs packages by path, and the parsing broke on a layout I had not accounted for. I could have patched the one case. Instead I changed how paths get handled generally: the tool resolves what it can, and when it cannot find a file it stops and asks the user where that one thing lives instead of guessing or dying with something unreadable. That was the right call because it stopped treating non-standard layouts as user error. Standardization is still the goal, and until it lands the tool has to work for the team as it actually is rather than as I would like it to be. Working with people means the design absorbs some of that instead of demanding they absorb all of it.</p>
+    </div>
+  </section>
+
+  <section id="communication">
+    <h2>Communicating with stakeholders</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O2</li>
+    </ul>
+    <div class="prose">
+      <p>The writing I do at work that is not code is mostly proposals. When the studio needs a technology or a technique we do not already have, I am the one who writes up what it is, why we want it, and what it costs, and then presents that to the business side. The one I think about most was a distribution system. I laid out the features, the reasoning behind each one, and the price.</p>
+      <p>The first version I wrote was aimed at the wrong reader. I explained the system the way I understood it, which meant it was organized around how the thing works. That is useful to me and to nobody sitting in that room. The people I was presenting to were not deciding whether the architecture was sound. They were deciding whether to spend money, and what they needed from me was the shape of the tradeoff: what we get, what it costs, what happens if we do nothing.</p>
+      <p>The change that made the difference was visual before it was verbal. Managers read color faster than they read paragraphs. Marking the recommended option and the wins in green let the whole room know where I had landed before anyone had read a sentence, and it turned the discussion into questions about specifics instead of a slow walk through my reasoning to find the conclusion. That is not a trick. It is admitting that a decision-maker scans first and reads second, and that if I bury the recommendation in the middle of a justification I have made my own case harder to say yes to. I write the conclusion first now, and I make the page tell you what to think about before you start reading.</p>
+      <p>The same problem shows up in the code review recording for this capstone. The audience there is technical, but they are coming to my code without context, so the recording runs the same three beats in every section: what it does now, what is wrong with it, what I am going to change. Deciding what the audience needs to walk away with, and then organizing around that instead of around the thing itself, is the part that transfers.</p>
+    </div>
+  </section>
+
+  <section id="algorithms">
+    <h2>Data structures and algorithms</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O3</li>
+    </ul>
+    <div class="prose">
+      <p>CS 300 is where this started for me. The course was built around picking a structure and then defending the pick, and the assignment I remember is the binary search tree work, where the reflection was not about whether the tree functioned but about what it cost against a vector and a hash table for the same access pattern. That framing stuck. The question is not which structure is best, it is which one matches how the data actually gets touched.</p>
+      <p>The capstone gave me a case where the answer changed the product. GameBrowse searches server names as the user types. The naive version scans every server on every keystroke, which is fine on four seed records and falls apart as the set grows, because the cost per keystroke scales with the total number of servers. I replaced the scan with a prefix trie, so the cost depends on the length of what was typed plus the number of matches instead of the size of the collection. I built a deterministic generator so the benchmark measures the same input every run, then timed both paths from one thousand records up to seventy-five thousand with the ranking, the boost, and the paging identical on both sides. At seventy-five thousand the scan averaged around nine milliseconds per search and the trie stayed under one, and the gap keeps widening because only one of those two costs grows with the data.</p>
+      <p>The part I am most deliberate about is not the trie. It is the split between the base score and the per-user favorite boost. The base score is the same for everyone and can be computed once and cached. Favorites differ per user, so if I folded them into the base score nothing would be cacheable, because every user would rank the same servers differently. That is nearly free to build in at the start and expensive to retrofit after caching assumptions have spread. Two smaller things came from the same instinct: the comparison uses an epsilon tolerance so two floats that should tie fall back to name order instead of shuffling between runs, and every score factor guards against a missing field so an incomplete record scores low instead of producing NaN and poisoning the whole sort.</p>
+    </div>
+  </section>
+
+  <section id="engineering">
+    <h2>Software engineering and databases</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O4</li>
+    </ul>
+    <div class="prose">
+      <p>CS 340 is where I first worked against a real database instead of a fixture, building a client and server layer over MongoDB and dealing with the fact that the data outlives any one version of the code sitting on top of it. That idea runs through everything in this portfolio.</p>
+      <p>The design work in the capstone was mostly about where to draw seams. The trips controller imported the Mongoose model and built queries inline, which fused the HTTP layer to the persistence layer. I put a repository between them: a base class that wraps any model, a trip repository that extends it with domain-named methods, and a controller that depends on the interface instead of on Mongoose. The proof the seam is real is a test that injects a fake model and drives all five operations with no database running. On the Angular side I pulled the trip listing apart into a domain-agnostic browse contract, a list component, and a card component, then packaged them so a second consumer can adopt them without pushing changes back. I built it around the one screen I had rather than designing a universal system up front, which is the trade I would make again.</p>
+      <p>The clearest thing I learned came from being wrong. I added a compound index on start and name for a query that filters by date range and sorts by name. It looked right. The planner ignored it and walked the single-field name index instead, because once you scan a range of start values the rows are no longer in name order, so the sort would have to happen in memory afterward. Reversing it to name then start fixed it. Equality, then sort, then range. Measuring caught a second one I had introduced myself: the query whitelist built a case-insensitive regular expression, and a case-insensitive pattern cannot produce index bounds, so a name search read every key in the index. Fifty thousand keys examined to return ten documents. Storing a lowercased copy of the name, indexing that, and matching a case-sensitive pattern against lowercased input dropped it to eleven. Both of those looked correct on four seed records. Neither survived being measured at size.</p>
+    </div>
+  </section>
+
+  <section id="security">
+    <h2>Security</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O5</li>
+    </ul>
+    <div class="prose">
+      <p>CS 305 is where I learned to treat security as something you check rather than something you assume, working through checksum verification and the data handling obligations in a GDPR white paper. What that course did not give me was the experience of finding a real flaw in something I had already shipped.</p>
+      <p>The capstone did. Passwords were hashed with PBKDF2 at a thousand iterations, a number that was reasonable when PBKDF2 was published and has not been defensible for a long time. Raising it to 210,000 sounds like changing a constant, but it invalidates every hash already stored, so every existing account would fail to log in with the correct password. I store the iteration count on each user record and verify against the stored value, and the login strategy rehashes at the current count right after a successful check, since login is the only moment the application holds the plaintext. Old accounts migrate as their owners return and nobody gets locked out. I should be straight about the limit of that: Argon2id is the stronger recommendation now, and I kept PBKDF2 because it is what the application already used. Raising the work factor is a real improvement, not the best available option.</p>
+      <p>The authorization gap was worse than the hashing. Every write route checked that a token was valid and stopped there. A valid token says who you are, not what you are allowed to do, so any account that could log in could delete any record. I put a role in the token, added a middleware that answers 401 with no token and 403 with the wrong role, and built the favorites repository so that every method takes an owner id and folds it into the filter before the query exists. There is no method on that class that can read or delete a row without an owner. I would rather make the mistake impossible to write than remember to check for it in five places.</p>
+      <p>The finding I keep coming back to did not come from reading code at all. I was watching the server log during a live test and noticed every response was two digits except the 401s, which were 2,938 bytes. An unauthenticated request to a protected route was returning a full HTML page with a Node stack trace in it: absolute paths under my home directory, the project layout, the dependency internals. The cause was handler order. A generic error renderer was registered before the handler meant to turn token failures into JSON, and it never called next, so the JSON handler had never run once in the life of the application. The same request is 46 bytes now. What makes it worth writing down is that sixty unit tests passed the entire time it was broken, because none of them load the entry point. The defect only existed in the assembled application. A passing suite is evidence about the units, and I had been reading it as evidence about the system.</p>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <h2>How the artifacts fit together</h2>
+    <hr class="rule">
+    <ul class="tags">
+      <li class="tag on">O2</li>
+      <li class="tag">O3</li>
+      <li class="tag">O4</li>
+      <li class="tag">O5</li>
+    </ul>
+    <div class="prose">
+      <p>All three enhancements are the same codebase seen through three different lenses, and that was the point. Three unrelated projects would show that I can start things. One application enhanced three ways shows what happens when a design decision made for one reason has to survive contact with two others.</p>
+      <p>They stack in the order I did them. The repository layer had to exist before the ranking engine was worth building, because the engine needs candidates from somewhere and I did not want it reaching into Mongoose. The ranking engine is what made the index work matter, because scoring is cheap and finding candidates is not, so the database enhancement is answering a cost the algorithm exposed. The favorites collection in the third enhancement is what feeds the per-user boost designed in the second. Pull any one out and the other two get worse.</p>
+      <p>The re-theme from a travel site to a game browser is not finished, and I would rather say that than let it look complete. The schema still carries the original field names, and favorites has no interface yet. What is finished is the part the outcomes are scored on. The <a href="code-review.html">code review</a> is where I walk the application as it was and name the problems before fixing any of them. The <a href="artifacts.html">artifacts</a> page has each enhancement with the narrative and links to the code before and after, so the claims here can be checked against commits.</p>
+      <p>Where I am headed is platform and systems engineering. Longer term I want to build platforms for user-generated content, the way Minecraft and Hytale let other people make the thing worth showing up for. That is the same problem as this artifact at a different scale: someone else submits the content, and the system has to rank it, index it, and refuse to trust it.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>SNHU CS 499 Computer Science Capstone</span>
+    <span><a href="https://github.com/SireNiklas">github.com/SireNiklas</a></span>
+    <span><a href="mailto:SirNiklas9@proton.me">SirNiklas9@proton.me</a></span>
+  </footer>
+
+</main>
+</body>
+</html>
